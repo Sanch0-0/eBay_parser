@@ -5,6 +5,8 @@ import xlsxwriter
 import os
 
 
+
+
 def generate_url_address(text: str, pages: int):
     text = text.strip().replace(" ", "+")
     responses = []
@@ -55,22 +57,13 @@ def scrape_ebay(text: str, total_pages: int):
 
 
 def save_to_excel(products, filename):
-    if os.path.exists(filename):
-        existing_data = pd.read_excel(filename)
-        existing_links = existing_data['link'].tolist()
-    else:
-        existing_data = pd.DataFrame()
-        existing_links = []
-
     ebay_data = pd.DataFrame(products)
-
-    writer = pd.ExcelWriter(filename, engine='xlsxwriter')
-    ebay_data.to_excel(writer, index=False, sheet_name='Sheet1')
-    writer.close()
-
+    
+    with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
+        ebay_data.to_excel(writer, index=False, sheet_name='Sheet1')
 
 
-# print(scrape_ebay("gpu card", 10))
-products = scrape_ebay(text=input("Enter a product: "), total_pages=10)
+
+products = scrape_ebay(text=input("Enter a product: "), total_pages=2)
 filename = 'ebay_products.xlsx'
 save_to_excel(products, filename)
